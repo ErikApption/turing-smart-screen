@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net7.0;net6.0</TargetFrameworks>
     <CodeAnalysisRuleSet>..\Analyzers.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
@@ -9,6 +9,7 @@
     <PackageId>TuringSmartScreenLib.Helpers.SkiaSharp</PackageId>
     <Title>TuringSmartScreenLib.Helpers.SkiaSharp</Title>
     <Description>Turing Smart Screen controller helper.</Description>
+    <Summary>Turing Smart Screen controller helper</Summary>
     <PackageTags>turing-smart-screen image</PackageTags>
   </PropertyGroup>
 
@@ -18,6 +19,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TuringSmartScreenLib\TuringSmartScreenLib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="StyleCop.Analyzers" Version="1.2.0-beta.556">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

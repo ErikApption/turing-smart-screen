@@ -1,8 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net6.0</TargetFrameworks>
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <TargetFrameworks>net8.0;net7.0;net6.0</TargetFrameworks>
     <CodeAnalysisRuleSet>..\Analyzers.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
@@ -10,11 +9,22 @@
     <PackageId>TuringSmartScreenLib</PackageId>
     <Title>TuringSmartScreenLib</Title>
     <Description>Turing Smart Screen controller.</Description>
+    <Summary>Turing Smart Screen controller</Summary>
     <PackageTags>turing-smart-screen hardware serial port</PackageTags>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
+
 
   <ItemGroup>
     <PackageReference Include="System.IO.Ports" Version="8.0.*" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Update="StyleCop.Analyzers" Version="1.2.0-beta.556">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>
