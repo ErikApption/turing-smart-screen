@@ -1,4 +1,3 @@
-using System.CommandLine;
 using System.CommandLine.Builder;
 using System.CommandLine.Hosting;
 using System.CommandLine.Parsing;
@@ -6,7 +5,6 @@ using System.CommandLine.Parsing;
 using Microsoft.Extensions.DependencyInjection;
 
 using TuringSmartScreenTool.Commands;
-using TuringSmartScreenTool.Components;
 
 var rootCommand = new RootCommand("Turing Smart Screen tool");
 rootCommand.Setup();

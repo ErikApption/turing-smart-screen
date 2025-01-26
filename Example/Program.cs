@@ -5,7 +5,7 @@ using SkiaSharp;
 using TuringSmartScreenLib;
 using TuringSmartScreenLib.Helpers.SkiaSharp;
 
-public static class Program
+internal static class Program
 {
     private const int Margin = 2;
 
@@ -15,10 +15,12 @@ public static class Program
     public static void Main()
     {
         // Create screen
-        using var screen = ScreenFactory.Create(ScreenType.RevisionA, "COM9");
+        using var screen = ScreenFactory.Create(ScreenType.RevisionB, "COM9");
 
         screen.SetBrightness(100);
-        screen.Orientation = ScreenOrientation.Landscape;
+        screen.Orientation = ScreenOrientation.ReverseLandscape;
+
+        screen.Clear();
 
         // Clear
         using var clearBuffer = screen.CreateBuffer();
@@ -28,17 +30,16 @@ public static class Program
         // Paint
         using var paint = new SKPaint();
         paint.IsAntialias = true;
-        paint.TextSize = 96;
         paint.Color = SKColors.Red;
+        using var font = new SKFont();
+        font.Size = 96;
 
         // Calc image size
         var imageWidth = 0;
         var imageHeight = 0;
         for (var i = 0; i < 10; i++)
         {
-            var rect = default(SKRect);
-            paint.MeasureText($"{i}", ref rect);
-
+            font.MeasureText($"{i}", out var rect);
             imageWidth = Math.Max(imageWidth, (int)Math.Floor(rect.Width));
             imageHeight = Math.Max(imageHeight, (int)Math.Floor(rect.Height));
         }
@@ -53,7 +54,7 @@ public static class Program
             using var bitmap = new SKBitmap(imageWidth, imageHeight);
             using var canvas = new SKCanvas(bitmap);
             canvas.Clear(SKColors.White);
-            canvas.DrawText($"{i}", Margin, imageHeight - Margin, paint);
+            canvas.DrawText($"{i}", Margin, imageHeight - Margin, font, paint);
             canvas.Flush();
 
             var buffer = screen.CreateBuffer(imageWidth, imageHeight);

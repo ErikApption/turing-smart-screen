@@ -6,16 +6,16 @@ using System.Buffers.Binary;
 using System.IO.Ports;
 using System.Reflection;
 
-public sealed unsafe class TuringSmartScreenRevisionC : IDisposable
+public sealed unsafe class TuringSmartScreenRevisionE : IDisposable
 {
     private const int WriteSize = 250;
     private const int ReadSize = 1024;
-    private const int ReadHelloSize = 23;
+    private const int ReadHelloSize = 24;
     private const int PartialBlockSize = 80;
 
     private static readonly byte[] CommandHello = [0x01, 0xef, 0x69, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0xc5, 0xd3];
     private static readonly byte[] CommandSetBrightness = [0x7b, 0xef, 0x69, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00];
-    private static readonly byte[] CommandDisplayBitmap = [0xc8, 0xef, 0x69, 0x00, 0x17, 0x70];
+    private static readonly byte[] CommandDisplayBitmap = [0xc8, 0xef, 0x69, 0x00, 0x38, 0x40, 0x00];
     private static readonly byte[] CommandPreUpdateBitmap = [0x86, 0xef, 0x69, 0x00, 0x00, 0x00, 0x01];
     private static readonly byte[] CommandUpdateBitmap = [0xcc, 0xef, 0x69, 0x00, 0x00];
     private static readonly byte[] CommandQueryStatus = [0xcf, 0xef, 0x69, 0x00, 0x00, 0x00, 0x01];
@@ -33,12 +33,12 @@ public sealed unsafe class TuringSmartScreenRevisionC : IDisposable
     private int renderCount;
 
 #pragma warning disable CA1822
-    public int Width => 800;
+    public int Width => 480;
 
-    public int Height => 480;
+    public int Height => 1920;
 #pragma warning restore CA1822
 
-    public TuringSmartScreenRevisionC(string name)
+    public TuringSmartScreenRevisionE(string name)
     {
         port = new SerialPort(name)
         {
@@ -99,7 +99,7 @@ public sealed unsafe class TuringSmartScreenRevisionC : IDisposable
         Flush();
 
         var response = ReadResponse(ReadHelloSize);
-        if ((response.Length != ReadHelloSize) || !response.StartsWith("chs_5inch"u8))
+        if ((response.Length != ReadHelloSize) || !response.StartsWith("chs_88inch"u8))
         {
             throw new IOException($"Unknown response. response=[{Convert.ToHexString(response)}]");
         }
@@ -279,8 +279,7 @@ public sealed unsafe class TuringSmartScreenRevisionC : IDisposable
                     RotateOption.Rotate180 => ((Height - 1 - y) * Width) + (Width - 1 - x),
                     _ => (y * Width) + x
                 };
-                Write(bitmap.AsSpan(offset * 3, 3));
-                Write(0xff);
+                Write(bitmap.AsSpan(offset * 4, 4));
             }
         }
         Flush();
@@ -310,7 +309,7 @@ public sealed unsafe class TuringSmartScreenRevisionC : IDisposable
         header[3] = (byte)((width >> 8) & 0xff);
         header[4] = (byte)(width & 0xff);
 
-        var bitmapSize = (((width * 3) + header.Length) * height) + CommandUpdateBitmapTerminate.Length;
+        var bitmapSize = (((width * 4) + header.Length) * height) + CommandUpdateBitmapTerminate.Length;
         var size = (Span<byte>)stackalloc byte[2];
         size[0] = (byte)((bitmapSize >> 8) & 0xff);
         size[1] = (byte)(bitmapSize & 0xff);
@@ -343,7 +342,7 @@ public sealed unsafe class TuringSmartScreenRevisionC : IDisposable
                     RotateOption.Rotate180 => (bitmapX + w - 1 - ox, bitmapY + h - 1 - oy),
                     _ => (bitmapX + ox, bitmapY + oy)
                 };
-                Write(bitmap.AsSpan(((py * bitmapWidth) + px) * 3, 3));
+                Write(bitmap.AsSpan(((py * bitmapWidth) + px) * 4, 4));
             }
         }
         Write(CommandUpdateBitmapTerminate);

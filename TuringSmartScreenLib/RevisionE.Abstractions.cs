@@ -1,11 +1,11 @@
 namespace TuringSmartScreenLib;
 
-internal sealed class ScreenWrapperRevisionC : ScreenBase
+internal sealed class ScreenWrapperRevisionE : ScreenBase
 {
-    private readonly TuringSmartScreenRevisionC screen;
+    private readonly TuringSmartScreenRevisionE screen;
 
-    public ScreenWrapperRevisionC(TuringSmartScreenRevisionC screen)
-        : base(screen.Width, screen.Height, ScreenOrientation.Landscape)
+    public ScreenWrapperRevisionE(TuringSmartScreenRevisionE screen)
+        : base(screen.Width, screen.Height, ScreenOrientation.Portrait)
     {
         this.screen = screen;
     }
@@ -36,20 +36,20 @@ internal sealed class ScreenWrapperRevisionC : ScreenBase
     public override void SetBrightness(byte level) => screen.SetBrightness(level);
 
     protected override bool IsRotated(ScreenOrientation orientation) =>
-        orientation is ScreenOrientation.Portrait or ScreenOrientation.ReversePortrait;
+        orientation is ScreenOrientation.Landscape or ScreenOrientation.ReverseLandscape;
 
     protected override bool SetOrientation(ScreenOrientation orientation) => true;
 
-    public override IScreenBuffer CreateBuffer(int width, int height) => new ScreenBufferBgr888(width, height);
+    public override IScreenBuffer CreateBuffer(int width, int height) => new ScreenBufferBgra8888(width, height);
 
-    public override bool DisplayBuffer(int x, int y, IScreenBuffer buffer) => screen.DisplayBitmap(x, y, ((ScreenBufferBgr888)buffer).Buffer, buffer.Width, buffer.Height, CalcRotateOption());
+    public override bool DisplayBuffer(int x, int y, IScreenBuffer buffer) => screen.DisplayBitmap(x, y, ((ScreenBufferBgra8888)buffer).Buffer, buffer.Width, buffer.Height, CalcRotateOption());
 
     private RotateOption CalcRotateOption() =>
         Orientation switch
         {
-            ScreenOrientation.Portrait => RotateOption.Rotate270,
-            ScreenOrientation.ReversePortrait => RotateOption.Rotate90,
-            ScreenOrientation.ReverseLandscape => RotateOption.Rotate180,
+            ScreenOrientation.Landscape => RotateOption.Rotate90,
+            ScreenOrientation.ReversePortrait => RotateOption.Rotate180,
+            ScreenOrientation.ReverseLandscape => RotateOption.Rotate270,
             _ => RotateOption.None
         };
 }

@@ -12,6 +12,8 @@ public interface IScreen : IDisposable
 
     void Clear();
 
+    void Clear(byte r, byte g, byte b);
+
     void ScreenOff();
 
     void ScreenOn();
@@ -20,5 +22,5 @@ public interface IScreen : IDisposable
 
     IScreenBuffer CreateBuffer(int width, int height);
 
-    void DisplayBuffer(int x, int y, IScreenBuffer buffer);
+    bool DisplayBuffer(int x, int y, IScreenBuffer buffer);
 }

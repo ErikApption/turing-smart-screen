@@ -6,31 +6,11 @@ internal abstract class ScreenBase : IScreen
 
     private readonly int height;
 
-    private ScreenOrientation orientation = ScreenOrientation.Portrait;
+    private ScreenOrientation orientation;
 
-    public int Width
-    {
-        get
-        {
-            if ((orientation == ScreenOrientation.Portrait) || (orientation == ScreenOrientation.ReversePortrait))
-            {
-                return width;
-            }
-            return height;
-        }
-    }
+    public int Width => IsRotated(orientation) ? height : width;
 
-    public int Height
-    {
-        get
-        {
-            if ((orientation == ScreenOrientation.Portrait) || (orientation == ScreenOrientation.ReversePortrait))
-            {
-                return height;
-            }
-            return width;
-        }
-    }
+    public int Height => IsRotated(orientation) ? width : height;
 
     public ScreenOrientation Orientation
     {
@@ -44,11 +24,14 @@ internal abstract class ScreenBase : IScreen
         }
     }
 
-    protected ScreenBase(int width, int height)
+    protected ScreenBase(int width, int height, ScreenOrientation orientation)
     {
         this.width = width;
         this.height = height;
+        this.orientation = orientation;
     }
+
+    protected abstract bool IsRotated(ScreenOrientation orientation);
 
     protected abstract bool SetOrientation(ScreenOrientation orientation);
 
@@ -58,6 +41,8 @@ internal abstract class ScreenBase : IScreen
 
     public abstract void Clear();
 
+    public abstract void Clear(byte r, byte g, byte b);
+
     public abstract void ScreenOff();
 
     public abstract void ScreenOn();
@@ -66,5 +51,5 @@ internal abstract class ScreenBase : IScreen
 
     public abstract IScreenBuffer CreateBuffer(int width, int height);
 
-    public abstract void DisplayBuffer(int x, int y, IScreenBuffer buffer);
+    public abstract bool DisplayBuffer(int x, int y, IScreenBuffer buffer);
 }
